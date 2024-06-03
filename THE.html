@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Find Local Farmers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #farmers-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Find Local Farmers</h1>
+
+    <p>Click the button to find local farmers near you:</p>
+
+    <button onclick="findLocalFarmers()">Find Local Farmers</button>
+
+    <div id="farmers-container">
+        
+    </div>
+
+    <script>
+        function findLocalFarmers() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    try {
+                        
+                        const farmers = await getLocalFarmersFromAPI(latitude, longitude);
+
+                        displayFarmers(farmers);
+                    } catch (error) {
+                        console.error('Error fetching farmer data:', error);
+                    }
+                }, (error) => {
+                    console.error('Error getting user location:', error);
+                });
+            } else {
+                alert('Geolocation is not supported by your browser');
+            }
+        }
+
+        async function getLocalFarmersFromAPI(latitude, longitude) {
+            
+            return [
+                { name: 'John Doe', location: 'Farm A' },
+                { name: 'Jane Smith', location: 'Farm B' },
+                
+            ];
+        }
+
+        function displayFarmers(farmers) {
+            const farmersContainer = document.getElementById('farmers-container');
+            farmersContainer.innerHTML = ''; 
+
+            if (farmers.length === 0) {
+                farmersContainer.innerHTML = '<p>No farmers found nearby.</p>';
+            } else {
+                farmers.forEach((farmer) => {
+                    const farmerInfo = document.createElement('p');
+                    farmerInfo.textContent = `Name: ${farmer.name}, Location: ${farmer.location}`;
+                    farmersContainer.appendChild(farmerInfo);
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
